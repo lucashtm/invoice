@@ -1,7 +1,8 @@
 #include <QtWidgets>
 #include <QDebug>
+#include "invoice_form.h"
 
-void buildLayout(QWidget *window){
+void buildLayout(QWidget *window, InvoiceForm *form){
   QLabel *unitCostLabel = new QLabel(QApplication::translate("windowlayout", "Unit Cost:"));
   QLineEdit *unitCostLineEdit = new QLineEdit();
   QLabel *workingDaysLabel = new QLabel(QApplication::translate("windowlayout", "Working Days:"));
@@ -11,16 +12,11 @@ void buildLayout(QWidget *window){
   QPushButton *saveButton = new QPushButton(QApplication::translate("button", "Save"), window);
 
   QObject::connect(unitCostLineEdit, &QLineEdit::textEdited, [](const QString &text) { qDebug() << text; });
-  QObject::connect(saveButton, &QPushButton::clicked, [unitCostLineEdit](bool checked) {
-      QJsonObject save {};
-      save["unitCost"] = unitCostLineEdit->text();
-      QFile saveFile(QStringLiteral("save.json"));
-      if (!saveFile.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open save file.");
-        return false;
-      }
-      saveFile.write(QJsonDocument(save).toJson());
-  });
+  QObject::connect(unitCostLineEdit, &QLineEdit::textEdited, form, &InvoiceForm::setUnitCost);
+  bool result = QObject::connect(saveButton, &QPushButton::clicked, form, &InvoiceForm::save);
+  if(!result) {
+    qDebug() << "Couldnt connect";
+  }
   QFormLayout *layout = new QFormLayout();
   layout->addRow(unitCostLabel, unitCostLineEdit);
   layout->addRow(workingDaysLabel, workingDaysLineEdit);
@@ -33,9 +29,11 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QWidget window;
-    buildLayout(&window);
+    InvoiceForm *form = new InvoiceForm();
+    buildLayout(&window, form);
     window.resize(320, 240);
     window.show();
-    window.setWindowTitle(QApplication::translate("toplevel", "Top-level widget"));
+    window.setWindowTitle(QApplication::translate("window", "Invoice"));
+
     return app.exec();
 }
