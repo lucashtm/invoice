@@ -1,0 +1,11 @@
+services:
+  qt-docker:
+    image: qt-docker
+    build: .
+    stdin_open: true
+    tty: true
+    entrypoint: bash -c "cmake .. && make"
+    user: root
+    volumes:
+      - ./:/home/src
+      - ./build:/home/build
