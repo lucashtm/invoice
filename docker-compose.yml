@@ -1,11 +1,50 @@
 services:
-  qt-docker:
+  build:
     image: qt-docker
     build: .
     stdin_open: true
     tty: true
     entrypoint: bash -c "cmake .. && make"
     user: root
+    working_dir: /home/src/build
+    environment:
+      - XDG_CONFIG_HOME=/home/lucas/.config
+      - HOME=/home/lucas
+      - TEST=1
     volumes:
+      - /home/lucas/.local/share:/home/lucas/.local/share
+      - /home/lucas/.config:/home/lucas/.config
       - ./:/home/src
-      - ./build:/home/build
+
+  bash:
+    image: qt-docker
+    build: .
+    stdin_open: true
+    tty: true
+    entrypoint: bash
+    user: root
+    working_dir: /home
+    environment:
+      - XDG_CONFIG_HOME=/home/lucas/.config
+      - HOME=/home/lucas
+      - TEST=1
+    volumes:
+      - /home/lucas/.local/share:/home/lucas/.local/share
+      - /home/lucas/.config:/home/lucas/.config
+      - ./:/home/src
+
+  neovim:
+    image: qt-docker
+    build: .
+    tty: true
+    entrypoint: nvim /home/src
+    user: root
+    working_dir: /home/src
+    environment:
+      - XDG_CONFIG_HOME=/home/lucas/.config
+      - HOME=/home/lucas
+      - TEST=1
+    volumes:
+      - /home/lucas/.local/share:/home/lucas/.local/share
+      - /home/lucas/.config:/home/lucas/.config
+      - ./:/home/src
