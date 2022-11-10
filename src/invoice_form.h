@@ -6,13 +6,14 @@
 class InvoiceForm : public QObject {
   Q_OBJECT
   public:
+    InvoiceForm();
     uint32_t unitCost = 0;
-    uint32_t workingDays = 0;
     uint32_t holidays = 0;
     void load();
   public slots:
     void save();
     void setUnitCost(QString value);
-    void setWorkingDays(uint32_t value){};
-    void setHolidays(uint32_t value){};
+    void setHolidays(QString value);
+  private:
+    QString filename = "save.json";
 };
