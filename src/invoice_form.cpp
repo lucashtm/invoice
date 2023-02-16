@@ -1,4 +1,5 @@
 #include "invoice_form.h"
+#include <QPrinter>
 #include <QtWidgets>
 
 InvoiceForm::InvoiceForm() {
@@ -20,6 +21,29 @@ void InvoiceForm::save() {
   }
   saveFile.write(QJsonDocument(save).toJson());
   qDebug() << "Saved";
+  this->printToPdf();
+}
+
+void InvoiceForm::printToPdf() {
+  QString html =
+    "<h1 align=left>Invoice</h1>"
+    "<h2 align=left>BILLED TO</h2>"
+    "<h2 align=right>FROM</h2>" + this->billedTo + this->from;
+
+  QTextDocument document;
+  document.setHtml(html);
+  QSizeF paperSize;
+
+  QPrinter printer(QPrinter::PrinterResolution);
+  printer.setOutputFormat(QPrinter::PdfFormat);
+  printer.setPageSize(QPageSize::A4);
+  printer.setOutputFileName("test.pdf");
+  printer.setPageMargins(QMarginsF(15, 15, 15, 15));
+  paperSize.setWidth(printer.width());
+  paperSize.setHeight(printer.height());
+  document.setPageSize(paperSize);
+
+  document.print(&printer);
 }
 
 void InvoiceForm::load() {

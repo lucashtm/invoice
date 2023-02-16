@@ -14,6 +14,7 @@ class InvoiceForm : public QObject {
     uint32_t holidays = 0;
     double dailyHours = 0;
     void load();
+    void printToPdf();
   public slots:
     void save();
     void setBilledTo(QString value);

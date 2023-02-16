@@ -47,4 +47,5 @@ services:
     volumes:
       - /home/lucas/.local/share:/home/lucas/.local/share
       - /home/lucas/.config:/home/lucas/.config
+      - /home/lucas/.dotfiles:/home/lucas/.dotfiles
       - ./:/home/src
